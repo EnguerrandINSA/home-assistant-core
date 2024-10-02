@@ -179,17 +179,18 @@ async def _get_dashboard_info(hass, url_path):
         "views": views,
     }
 
-    if config is None or "views" not in config:
-        return data
+    # if config is None or "views" not in config:
+    #    return data
 
-    for idx, view in enumerate(config["views"]):
-        path = view.get("path", f"{idx}")
-        views.append(
-            {
-                "title": view.get("title", path),
-                "path": path,
-            }
-        )
+    if config is not None and "views" in config:
+        for idx, view in enumerate(config["views"]):
+            path = view.get("path", f"{idx}")
+            views.append(
+                {
+                    "title": view.get("title", path),
+                    "path": path,
+                }
+            )
 
     return data
 
