@@ -1096,19 +1096,18 @@ class DeviceRegistry(BaseRegistry[dict[str, list[dict[str, Any]]]]):
     ) -> set[tuple[str, str]]:
         """Normalize and validate connections, raise on collision with other devices."""
         normalized_connections = _normalize_connections(connections)
-        if allow_collisions:
-            return normalized_connections
-
-        for connection in normalized_connections:
-            # We need to iterate over each connection because if there is a
-            # conflict, the index will only see the last one and we will not
-            # be able to tell which one caused the conflict
-            if (
-                existing_device := self.async_get_device(connections={connection})
-            ) and existing_device.id != device_id:
-                raise DeviceConnectionCollisionError(
-                    normalized_connections, existing_device
-                )
+        if not allow_collisions:
+            #    return normalized_connections
+            for connection in normalized_connections:
+                # We need to iterate over each connection because if there is a
+                # conflict, the index will only see the last one and we will not
+                # be able to tell which one caused the conflict
+                if (
+                    existing_device := self.async_get_device(connections={connection})
+                ) and existing_device.id != device_id:
+                    raise DeviceConnectionCollisionError(
+                        normalized_connections, existing_device
+                    )
 
         return normalized_connections
 
